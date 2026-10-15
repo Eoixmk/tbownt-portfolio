@@ -1,0 +1,28 @@
+/* Design tokens. Colors come from the design mockup; the --accent value is the one meant to be swapped. */
+:root {
+  color-scheme: dark; /* native scrollbars and form controls follow the dark theme */
+  --accent: #c8f169;
+  --bg: #0e1116;
+  --card: #141921;
+  --border: #232a34;
+  --border-2: #2c333d;
+  --border-3: #3a4350;
+  --track: #1e2631;
+  --text: #e8eaed;
+  --text-2: #a3abb6;
+  --text-3: #d2d7de;
+  --chip: #c3cad3;
+  --muted: #8b94a0;
+  --warn: #ffb86b;
+  --danger: #ff8f7a;
+  --mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --sans: 'Hanken Grotesk Variable', system-ui, sans-serif;
+
+  /* surfaces used by the inspector illustrations */
+  --active-bg: #1a222c;
+  --rubber: #1b222c;
+  --rubber-hi: #232d3a;
+  --rail: #232b36;
+  --trailer-body: #171d26;
+  --grid: #1b222c;
+}
