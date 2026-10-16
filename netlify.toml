@@ -1,0 +1,15 @@
+# Netlify builds the site with Vite and publishes the compiled output.
+# Publishing the repo root instead serves index.html with /src/main.ts,
+# which the browser cannot run (Netlify labels .ts files as a Qt Linguist type).
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Vite fingerprints everything under /assets, so it can be cached for a year.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

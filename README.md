@@ -137,7 +137,9 @@ pnpm verify         # format check, tests and build, as CI does
 
 ## Deploy
 
-The site is static. On Netlify: build command `pnpm build`, publish directory `dist`.
+The site is static. `netlify.toml` already sets the build command (`pnpm build`), the publish directory (`dist`) and Node 22, so connecting the repository to Netlify is enough.
+
+Publish `dist`, never the repository root: the source `index.html` points at `/src/main.ts`, which a browser cannot run.
 
 ## Roadmap
 
