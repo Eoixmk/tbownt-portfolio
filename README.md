@@ -34,16 +34,18 @@ My previous portfolio was built from a video tutorial before I used AI tooling, 
 
 ## What is on the page
 
-| Section          | Purpose                                                                                                                               |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Hero             | Positioning, availability, and an interactive tire card with invented data.                                                           |
-| Interactive demo | A fleet inspector built from scratch: axle layouts, per-tire status, tread gauges and a wear projection. Described below.             |
-| 01 What I do     | Frontend, backend (with a REST / GraphQL switch) and async work, each with a small illustration.                                      |
-| 02 Selected work | Three production systems, with an animated architecture diagram.                                                                      |
-| 03 Projects      | Personal projects. One is published (a BCV vs Binance P2P exchange-rate gap tracker with a SwiftUI app and widget); more are planned. |
-| 04 – 06          | Experience, stack and contact.                                                                                                        |
+| Section          | Purpose                                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Hero             | Positioning, availability, and an interactive tire card with invented data.                                                             |
+| 01 What I do     | Frontend, backend (with a REST / GraphQL switch) and async work, each with a small illustration.                                        |
+| 02 Selected work | Three production systems, with an animated architecture diagram.                                                                        |
+| Interactive demo | A fleet inspector built from scratch, placed after the work it supports as proof: axle layouts, tire status, gauges, a wear projection. |
+| 03 Projects      | Personal projects. One is published (a BCV vs Binance P2P exchange-rate gap tracker with a SwiftUI app and widget); more are planned.   |
+| 04 – 06          | Experience, stack and contact.                                                                                                          |
 
 ### The interactive demo
+
+The demo is about the engineering, not about tires: a rules engine, a regression and a drawing, all in plain TypeScript and SVG. It sits after the selected work so that it reads as proof of the work above, and it explains itself before anything is clicked: a short introduction says what it is and why it exists, each card has a one-line note, "Try" buttons jump to a tire with a given problem, and an "Under the hood" strip names what it demonstrates and links to the source.
 
 The demo models a small fleet problem end to end, using only invented data:
 

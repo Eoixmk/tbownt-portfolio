@@ -16,9 +16,9 @@ import SiteFooter from '@/sections/site-footer/SiteFooter.vue'
     <SiteHeader />
     <main id="main" tabindex="-1">
       <HeroSection />
-      <FleetInspector />
       <FocusSection />
       <WorkSection />
+      <FleetInspector />
       <ProjectsSection />
       <ExperienceSection />
       <StackSection />

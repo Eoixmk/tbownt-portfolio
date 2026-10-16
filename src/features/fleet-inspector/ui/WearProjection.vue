@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { projectWear, type FleetTire } from '../domain'
+import { inspectorCopy } from './inspector.content'
 import WearChart from './WearChart.vue'
 import WearSummary from './WearSummary.vue'
 
@@ -13,6 +14,7 @@ const projection = computed(() => projectWear(props.tire))
 <template>
   <div>
     <h3 class="label label-tracked">3 · PROJECT ITS WEAR</h3>
+    <p class="step-note">{{ inspectorCopy.steps.project }}</p>
     <div class="body">
       <WearChart class="chart-col" :tire="tire" :projection="projection" />
       <WearSummary class="summary-col" :projection="projection" :readings="tire.readings.length" />
