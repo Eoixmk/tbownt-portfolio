@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Health } from './types'
-import { assess, evaluate, healthLabel, pickDefaultTire, pressureInRange, treadZone } from './evaluate'
+import { assess, evaluate, findByFinding, healthLabel, pickDefaultTire, pressureInRange, treadZone } from './evaluate'
 import { tireWith } from './test-helpers'
 import { LIMIT_MM, UNEVEN_MM, WARN_MM } from './thresholds'
 
@@ -9,7 +9,7 @@ const depths = (outer: number, center: number, inner: number) => ({ outer, cente
 describe('evaluate', () => {
   it('reports a healthy tire with no findings', () => {
     const ev = evaluate(tireWith())
-    expect(ev).toEqual({ health: 'ok', label: 'Healthy', min: 10, flags: [] })
+    expect(ev).toEqual({ health: 'ok', label: 'Healthy', min: 10, flags: [], findings: [] })
   })
 
   it('uses the shallowest of the three readings', () => {
@@ -77,6 +77,37 @@ describe('assess', () => {
     const result = assess([a, b])
     expect(result.map((r) => r.tire.id)).toEqual(['T01', 'T02'])
     expect(result.map((r) => r.evaluation.health)).toEqual(['ok', 'replace'])
+  })
+})
+
+describe('findings', () => {
+  it('reports one code per finding, in the same order as the messages', () => {
+    const ev = evaluate(tireWith({ depths: depths(2.5, 10, 9), pressure: 80 }))
+    expect(ev.findings).toEqual(['limit', 'uneven', 'pressure'])
+    expect(ev.findings).toHaveLength(ev.flags.length)
+  })
+
+  it('tells near-the-limit apart from past it', () => {
+    expect(evaluate(tireWith({ depths: depths(5, 5, 5) })).findings).toEqual(['near-limit'])
+    expect(evaluate(tireWith({ depths: depths(3, 3, 3) })).findings).toEqual(['limit'])
+  })
+})
+
+describe('findByFinding', () => {
+  const items = assess([
+    tireWith({ id: 'A' }),
+    tireWith({ id: 'B', pressure: 80 }),
+    tireWith({ id: 'C', depths: depths(2, 2, 2) }),
+    tireWith({ id: 'D', pressure: 80 }),
+  ])
+
+  it('returns the first tire with that kind of finding', () => {
+    expect(findByFinding(items, 'pressure')).toBe('B')
+    expect(findByFinding(items, 'limit')).toBe('C')
+  })
+
+  it('returns undefined when no tire has it', () => {
+    expect(findByFinding(items, 'uneven')).toBeUndefined()
   })
 })
 

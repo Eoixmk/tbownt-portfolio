@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { evaluate, assess, pickDefaultTire } from './evaluate'
+import { evaluate, assess, findByFinding, pickDefaultTire } from './evaluate'
 import { describeTire, layouts } from './layouts'
 import { fmtKm } from './format'
 import { buildTires } from './tires'
@@ -91,5 +91,19 @@ describe('labels', () => {
 
   it('formats mileage with a thousands separator', () => {
     expect(fmtKm(129_000)).toBe('129,000 km')
+  })
+})
+
+describe('guided examples', () => {
+  const found = (layoutId: string, code: Parameters<typeof findByFinding>[1]) =>
+    findByFinding(assess(buildTires(byId(layoutId))), code)
+
+  it.each(['tractor-trailer', 'with-spare'])('offers every kind of example in %s', (id) => {
+    for (const code of ['uneven', 'pressure', 'limit'] as const) expect(found(id, code), code).toBeDefined()
+  })
+
+  it('offers uneven wear and low pressure even on the smallest layout', () => {
+    expect(found('rigid', 'uneven')).toBeDefined()
+    expect(found('rigid', 'pressure')).toBeDefined()
   })
 })

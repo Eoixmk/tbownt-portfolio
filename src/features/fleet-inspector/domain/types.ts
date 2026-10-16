@@ -37,6 +37,9 @@ export interface FleetTire {
   readings: Reading[]
 }
 
+/** Why a tire is not simply healthy. Stable codes, so views can look tires up by kind of problem. */
+export type FindingCode = 'limit' | 'near-limit' | 'uneven' | 'pressure'
+
 export interface Evaluation {
   health: Health
   /** Generic status word: Healthy, Watch or Replace. The causes are in `flags`. */
@@ -45,6 +48,8 @@ export interface Evaluation {
   min: number
   /** Short, one-line findings. */
   flags: string[]
+  /** The same findings as codes, in the same order. */
+  findings: FindingCode[]
 }
 
 export interface Assessed {
