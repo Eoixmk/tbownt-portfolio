@@ -12,6 +12,7 @@ import {
 } from '../domain'
 import { KM_SCALE, PRESSURE_SCALE_PSI } from './gauge-scales'
 import { healthColor } from './health-style'
+import { inspectorCopy } from './inspector.content'
 
 const props = defineProps<{ item: Assessed }>()
 
@@ -49,6 +50,7 @@ const zones = {
 <template>
   <div :style="zones">
     <h3 class="label label-tracked">2 · INSPECT A TIRE</h3>
+    <p class="step-note">{{ inspectorCopy.steps.inspect }}</p>
 
     <div class="ident">
       <div class="code">{{ tire.id }}</div>

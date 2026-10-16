@@ -6,6 +6,7 @@ import {
   assess,
   buildTires,
   describeTire,
+  findByFinding,
   healthLabel,
   layouts,
   NEW_TREAD_MM,
@@ -14,6 +15,7 @@ import {
 } from '../domain'
 import AxleDiagram from './AxleDiagram.vue'
 import { healthColor, healthGlyph } from './health-style'
+import { inspectorCopy as copy } from './inspector.content'
 import TireDetail from './TireDetail.vue'
 import WearProjection from './WearProjection.vue'
 
@@ -29,6 +31,13 @@ function chooseLayout(id: string) {
   if (!items.value.some((i) => i.tire.id === selectedId.value)) selectedId.value = pickDefaultTire(items.value)
 }
 
+// Guided examples: jump to a tire with a given kind of problem. A layout without one simply hides the button.
+const examples = computed(() =>
+  copy.examples
+    .map((example) => ({ ...example, tireId: findByFinding(items.value, example.code) }))
+    .filter((example): example is typeof example & { tireId: string } => example.tireId !== undefined),
+)
+
 const legend: Health[] = ['ok', 'watch', 'replace']
 
 const announcement = computed(() => {
@@ -40,13 +49,21 @@ const announcement = computed(() => {
 <template>
   <section id="inspector" class="section" aria-labelledby="inspector-title">
     <div class="container">
-      <div class="eyebrow">Interactive demo</div>
-      <h2 id="inspector-title" class="h2">From axle layout to wear projection.</h2>
-      <p class="disclaimer">Illustrative data, not client data.</p>
+      <div class="eyebrow">{{ copy.eyebrow }}</div>
+      <h2 id="inspector-title" class="h2">{{ copy.title }}</h2>
+      <p class="lede">{{ copy.lede }}</p>
+
+      <div class="try" role="group" aria-label="Jump to an example">
+        <span class="try-label">{{ copy.tryLabel }}</span>
+        <button v-for="e in examples" :key="e.code" type="button" class="try-btn" @click="selectedId = e.tireId">
+          {{ e.label }}
+        </button>
+      </div>
 
       <div class="grid">
         <Card class="layout">
           <h3 class="label label-tracked">1 · CHOOSE A LAYOUT</h3>
+          <p class="step-note">{{ copy.steps.layout }}</p>
 
           <div role="group" aria-label="Vehicle layout" class="picker">
             <button
@@ -108,21 +125,90 @@ const announcement = computed(() => {
         </Card>
       </div>
 
+      <div class="hood">
+        <span class="hood-label">{{ copy.hood.label }}</span>
+        <ul class="hood-list" role="list">
+          <li v-for="item in copy.hood.items" :key="item" class="chip">{{ item }}</li>
+        </ul>
+        <a :href="copy.hood.source.href" target="_blank" rel="noopener" class="hood-link">
+          {{ copy.hood.source.label }}<span aria-hidden="true"> ↗</span
+          ><span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </div>
+
       <p class="sr-only" aria-live="polite">{{ announcement }}</p>
     </div>
   </section>
 </template>
 
 <style scoped>
-.disclaimer {
-  margin: 12px 0 0;
+.lede {
+  margin: 20px 0 0;
+  max-width: 720px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.try {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.try-label {
+  margin-right: 4px;
   font-family: var(--mono);
   font-size: 13px;
   color: var(--muted);
 }
+.try-btn {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--border-3);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+}
+.try-btn:hover {
+  border-color: var(--accent);
+}
+.hood {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+.hood-label {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hood-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.hood-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: none;
+}
 .grid {
   --card-pad: 28px;
-  margin-top: 36px;
+  margin-top: 28px;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;

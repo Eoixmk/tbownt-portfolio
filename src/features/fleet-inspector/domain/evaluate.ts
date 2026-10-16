@@ -1,5 +1,5 @@
 import { LIMIT_MM, UNEVEN_MM, WARN_MM } from './thresholds'
-import type { Assessed, Evaluation, FleetTire, Health } from './types'
+import type { Assessed, Evaluation, FindingCode, FleetTire, Health } from './types'
 
 const round1 = (n: number) => Math.round(n * 10) / 10
 
@@ -20,22 +20,24 @@ export function evaluate(tire: FleetTire): Evaluation {
   // Readings carry 0.1 mm precision; round so that 8.8 - 6.3 is 2.5, not 2.5000000000000004.
   const spread = round1(Math.max(outer, center, inner) - min)
   const flags: string[] = []
+  const findings: FindingCode[] = []
   let health: Health = 'ok'
 
-  const raise = (to: Exclude<Health, 'ok'>, text: string) => {
+  const raise = (to: Exclude<Health, 'ok'>, code: FindingCode, text: string) => {
+    findings.push(code)
     flags.push(text)
     if (to === 'replace' || health === 'ok') health = to
   }
 
   const zone = treadZone(min)
-  if (zone === 'replace') raise('replace', `Tread at or under the ${LIMIT_MM} mm limit`)
-  else if (zone === 'watch') raise('watch', 'Tread close to the limit')
-  if (spread > UNEVEN_MM) raise('watch', `Uneven wear: ${spread.toFixed(1)} mm spread`)
+  if (zone === 'replace') raise('replace', 'limit', `Tread at or under the ${LIMIT_MM} mm limit`)
+  else if (zone === 'watch') raise('watch', 'near-limit', 'Tread close to the limit')
+  if (spread > UNEVEN_MM) raise('watch', 'uneven', `Uneven wear: ${spread.toFixed(1)} mm spread`)
   if (!pressureInRange(tire)) {
-    raise('watch', `${tire.pressure < tire.minPressure ? 'Low' : 'High'} pressure: ${tire.pressure} psi`)
+    raise('watch', 'pressure', `${tire.pressure < tire.minPressure ? 'Low' : 'High'} pressure: ${tire.pressure} psi`)
   }
 
-  return { health, label: HEALTH_LABEL[health], min, flags }
+  return { health, label: HEALTH_LABEL[health], min, flags, findings }
 }
 
 /** Evaluate each tire once; views read from this instead of re-deriving. */
@@ -47,5 +49,9 @@ export function pickDefaultTire(items: Assessed[]): string {
   if (!pick) throw new Error('pickDefaultTire needs at least one tire')
   return pick.tire.id
 }
+
+/** Id of the first tire with the given kind of finding, if any: used to jump to an example. */
+export const findByFinding = (items: Assessed[], code: FindingCode): string | undefined =>
+  items.find((i) => i.evaluation.findings.includes(code))?.tire.id
 
 export const healthLabel = (health: Health) => HEALTH_LABEL[health]

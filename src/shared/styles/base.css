@@ -74,6 +74,13 @@ a:hover {
   letter-spacing: 0.06em;
 }
 
+.step-note {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
 .note {
   font-family: var(--mono);
   font-size: 12px;
